@@ -20,6 +20,7 @@ from utils.sh_utils import RGB2SH
 from simple_knn._C import distCUDA2
 from utils.graphics_utils import BasicPointCloud
 from utils.general_utils import strip_symmetric, build_scaling_rotation
+from pytorch3d.ops import knn_points
 
 
 class GaussianModel:
@@ -54,6 +55,9 @@ class GaussianModel:
         self.inverse_opacity_activation = inverse_sigmoid
 
         self.rotation_activation = torch.nn.functional.normalize
+
+    def init_knn(self, k: int):
+        self.knn_idx = knn_points(self.get_xyz, self.get_xyz, k=k, return_nn=True)
 
     @property
     def get_scaling(self):
